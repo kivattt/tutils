@@ -22,7 +22,7 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
     let mut color_prefix = String::from("");
 
     if !args.all {
-        if file.starts_with(".") {
+        if PathBuf::from(file).file_name().unwrap().to_str().unwrap().starts_with(".") {
             return;
         }
     }
