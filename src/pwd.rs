@@ -1,5 +1,5 @@
-mod working_directory;
+mod util;
 
 fn main() {
-    println!("{}", working_directory::working_directory().display())
+    println!("{}", util::working_directory().display())
 }
