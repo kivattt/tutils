@@ -30,6 +30,10 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf) {
             color_prefix = "\x1b[01;34m";
         } else {
             let f = fs::File::open(file.clone());
+            if f.is_err() {
+                return;
+            }
+
             let metadata = f.unwrap().metadata().unwrap();
             if metadata.permissions().mode() & 0o111 != 0 {
                 color_prefix = "\x1b[01;32m";
