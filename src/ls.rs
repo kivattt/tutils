@@ -19,7 +19,7 @@ struct Args {
 }
 
 fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent: &bool) {
-    let mut color_prefix = String::from("");
+    let mut print_prefix = String::from("");
 
     if !args.all {
         if PathBuf::from(file).file_name().unwrap().to_str().unwrap().starts_with(".") {
@@ -29,7 +29,7 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
 
     if args.color != "never" {
         if file.is_dir() {
-            color_prefix = "\x1b[01;34m".to_string();
+            print_prefix = "\x1b[01;34m".to_string();
         } else {
             let f = fs::File::open(file.clone());
             if f.is_err() {
@@ -38,18 +38,23 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
 
             let metadata = f.unwrap().metadata().unwrap();
             if metadata.permissions().mode() & 0o111 != 0 {
-                color_prefix = "\x1b[01;32m".to_string();
+                print_prefix = "\x1b[01;32m".to_string();
             } else {
-                color_prefix = "".to_string();
+                print_prefix = "".to_string();
+            }
+
+            let ansi_color = util::ansi_color_from_file_extension(file.to_str().unwrap());
+            if ansi_color != "" {
+                print_prefix = ansi_color.to_string();
             }
         }
     }
 
     if *_indent {
-        color_prefix.insert_str(0, "    ");
+        print_prefix.insert_str(0, "    ");
     }
 
-    print!("{}{}\x1b[0m\n", color_prefix, file.strip_prefix(&working_directory).unwrap().display());
+    print!("{}{}\x1b[0m\n", print_prefix, file.strip_prefix(&working_directory).unwrap().display());
 }
 
 fn main() {
