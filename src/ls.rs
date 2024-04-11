@@ -7,7 +7,6 @@ use clap::Parser;
 mod util;
 
 #[derive(Parser, Debug)]
-//#[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Args {
     #[arg(short, long, default_value_t = false)]
@@ -20,7 +19,6 @@ struct Args {
 }
 
 fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent: &bool) {
-//    let mut color_prefix: &str = "";
     let mut color_prefix = String::from("");
 
     if !args.all {
@@ -64,8 +62,15 @@ fn main() {
     let show_dir_names = args.files.len() > 1;
 
     for file_arg in &args.files {
-        let file_arg_canonicalized = PathBuf::from(file_arg).canonicalize().unwrap();
-        let paths = match fs::read_dir(file_arg_canonicalized.clone()) {
+        let file_arg_canonicalized = match PathBuf::from(file_arg).canonicalize() {
+            Ok(x) => x,
+            Err(_) => {
+                println!("\x1b[01;31mNo such file or directory: {}", file_arg);
+                continue;
+            }
+        };
+
+        let paths = match fs::read_dir(&file_arg_canonicalized) {
             Err(_) => process::exit(0),
             Ok(paths) => paths
         };
