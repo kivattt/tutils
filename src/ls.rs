@@ -9,11 +9,14 @@ mod util;
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    #[arg(short, long, default_value_t = false)]
+    #[arg(short, long, default_value_t = false, help="Do not ignore entries starting with .")]
     all: bool,
 
     #[arg(long, default_value_t = String::from("always"))] // "always", "never"
     color: String,
+
+    #[arg(long, default_value_t = false, help="Folder stats")]
+    summary: bool,
 
     files: Vec<String>,
 }
@@ -66,6 +69,9 @@ fn main() {
 
     let show_dir_names = args.files.len() > 1;
 
+    let mut dir_count = 0;
+    let mut file_count = 0;
+
     for file_arg in &args.files {
         let file_arg_canonicalized = match PathBuf::from(file_arg).canonicalize() {
             Ok(x) => x,
@@ -90,6 +96,12 @@ fn main() {
             }
         }
 
+        if args.summary {
+            dir_count += directories.len();
+            file_count += files.len();
+            continue;
+        }
+
         if show_dir_names {
             println!("\x1b[01;34m{}\x1b[0m/", util::path_without_slash_suffix(file_arg));
         }
@@ -101,5 +113,11 @@ fn main() {
         for file in files {
             print_entry(&file, &args, &file_arg_canonicalized, &show_dir_names);
         }
+    }
+
+    if args.summary {
+        println!("{} folders", dir_count);
+        println!("{} files", file_count);
+        println!("{} total", dir_count+file_count);
     }
 }
