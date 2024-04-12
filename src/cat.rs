@@ -11,6 +11,10 @@ fn main() {
     let args = Args::parse();
 
     for file in &args.files {
-        print!("{}", fs::read_to_string(file).unwrap());
+        let file_str = fs::read_to_string(file);
+        if file_str.is_err() {
+            continue;
+        }
+        print!("{}", file_str.unwrap());
     }
 }

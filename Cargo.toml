@@ -19,3 +19,7 @@ path = "src/ls.rs"
 [[bin]]
 name = "cat"
 path = "src/cat.rs"
+
+[[bin]]
+name = "hex"
+path = "src/hex.rs"
