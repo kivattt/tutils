@@ -1,3 +1,6 @@
+# Building
+`cargo build --release`
+
 # Commands
 `ls` List files
 `hex` Convert file or STDIN to hex
