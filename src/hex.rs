@@ -1,7 +1,7 @@
 use std::io;
 use std::io::prelude::*;
 use std::fs::File;
-use std::process::{self, exit};
+use std::process::{self};
 use clap::Parser;
 
 #[derive(Parser, Debug)]
