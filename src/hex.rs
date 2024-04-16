@@ -19,13 +19,46 @@ struct Args {
     files: Vec<String>,
 }
 
+const HEX_LOOKUP: &[u8] = "0123456789abcdef".as_bytes();
+
+fn handle_buf(buf: [u8; 512], size: usize, nonewline: bool, decode: bool, noignore: bool) -> bool {
+    if size == 0 {
+        if !nonewline {
+            println!();
+        }
+        return false;
+    }
+
+    if decode {
+        for i in (0..size).step_by(2) {
+            if i+1 >= size {
+                break;
+            }
+
+            let b1 = HEX_LOOKUP.iter().position(|&e| e == buf[i]);
+            let b2 = HEX_LOOKUP.iter().position(|&e| e == buf[i+1]);
+            if b1.is_none() || b2.is_none() {
+                if noignore {
+                    process::exit(1);
+                } else {
+                    continue; // FIXME: Only step by 1 here to ignore non-hex characters
+                }
+            }
+            print!("{}", ((b1.unwrap() << 4 | b2.unwrap()) as u8) as char);
+        }
+    } else {
+        for b in &buf[..size] {
+            print!("{}{}", HEX_LOOKUP[(b>>4) as usize] as char, HEX_LOOKUP[(b & 0xf) as usize] as char);
+        }
+    }
+
+    return true;
+}
+
 fn main() -> io::Result<()> {
     let args = Args::parse();
 
-    let hex_lookup = "0123456789abcdef".as_bytes();
-
     // No input files? Read from STDIN
-    // FIXME: A little repetitive
     if args.files.is_empty() {
         loop {
             let mut buf = [0; 512];
@@ -33,27 +66,8 @@ fn main() -> io::Result<()> {
                 Ok(len) => if len == 0 {
                     break;
                 } else {
-                    if args.decode {
-                        for i in (0..len).step_by(2) {
-                            if i+1 >= len {
-                                break;
-                            }
-
-                            let b1 = hex_lookup.iter().position(|&e| e == buf[i]);
-                            let b2 = hex_lookup.iter().position(|&e| e == buf[i+1]);
-                            if b1.is_none() || b2.is_none() {
-                                if args.noignore {
-                                    process::exit(1);
-                                } else {
-                                    continue; // FIXME: Only step by 1 here to ignore non-hex characters
-                                }
-                            }
-                            print!("{}", ((b1.unwrap() << 4 | b2.unwrap()) as u8) as char);
-                        }
-                    } else {
-                        for b in &buf[..len] {
-                            print!("{}{}", hex_lookup[(b>>4) as usize] as char, hex_lookup[(b & 0xf) as usize] as char);
-                        }
+                    if !handle_buf(buf, len, args.nonewline, args.decode, args.noignore) {
+                        break;
                     }
                 }
                 Err(_) => {
@@ -72,34 +86,8 @@ fn main() -> io::Result<()> {
             let mut buf = [0; 512];
             loop {
                 let bytes_read = f.read(&mut buf).unwrap();
-                if bytes_read == 0 {
-                    if !args.nonewline {
-                        println!();
-                    }
+                if !handle_buf(buf, bytes_read, args.nonewline, args.decode, args.noignore) {
                     break;
-                }
-
-                if args.decode {
-                    for i in (0..bytes_read).step_by(2) {
-                        if i+1 >= bytes_read {
-                            break;
-                        }
-
-                        let b1 = hex_lookup.iter().position(|&e| e == buf[i]);
-                        let b2 = hex_lookup.iter().position(|&e| e == buf[i+1]);
-                        if b1.is_none() || b2.is_none() {
-                            if args.noignore {
-                                process::exit(1);
-                            } else {
-                                continue; // FIXME: Only step by 1 here to ignore non-hex characters
-                            }
-                        }
-                        print!("{}", ((b1.unwrap() << 4 | b2.unwrap()) as u8) as char);
-                    }
-                } else {
-                    for b in &buf[..bytes_read] {
-                        print!("{}{}", hex_lookup[(b>>4) as usize] as char, hex_lookup[(b & 0xf) as usize] as char);
-                    }
                 }
             }
         } else {
