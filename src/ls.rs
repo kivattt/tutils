@@ -57,7 +57,7 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
         print_prefix.insert_str(0, "    ");
     }
 
-    print!("{}{}\x1b[0m\n", print_prefix, file.strip_prefix(&working_directory).unwrap().display());
+    println!("{}{}\x1b[0m", print_prefix, file.strip_prefix(&working_directory).unwrap().display());
 }
 
 fn main() {
