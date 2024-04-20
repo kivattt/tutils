@@ -40,7 +40,7 @@ fn should_print_dot(b: u8) -> bool {
         return true;
     }
 
-    if b == b'\n' {
+    if b < 0x20 {
         return true;
     }
 
