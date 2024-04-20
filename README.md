@@ -2,7 +2,8 @@
 `cargo build --release`
 
 # Commands
-`ls` List files\
-`hex` Convert file or STDIN to hex\
 `cat` Print a file or STDIN\
+`hex` Convert to hex\
+`ls` List files\
 `pwd` Print working directory
+`xxd` Visualize as hex
