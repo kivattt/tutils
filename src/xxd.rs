@@ -20,7 +20,19 @@ const BYTES_PER_LINE: usize = 16;
 const GROUP_BYTES: usize = 2;
 
 fn color_of_byte(b: u8) -> String {
-    if !b.is_ascii() {
+    if b == 0x00 {
+        return "\x1b[1;37m".to_string();
+    }
+
+    if b == 0xff {
+        return "\x1b[1;34m".to_string();
+    }
+
+    if b == 0x09 || b == 0x0a || b == 0x0d {
+        return "\x1b[1;33m".to_string();
+    }
+
+    if b >= 0x7f || b < 0x20 {
         return "\x1b[1;31m".to_string();
     }
 
@@ -36,7 +48,7 @@ fn color_of_byte(b: u8) -> String {
 }
 
 fn should_print_dot(b: u8) -> bool {
-    if !b.is_ascii() {
+    if b >= 0x7f {
         return true;
     }
 
