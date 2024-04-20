@@ -23,3 +23,7 @@ path = "src/cat.rs"
 [[bin]]
 name = "hex"
 path = "src/hex.rs"
+
+[[bin]]
+name = "xxd"
+path = "src/xxd.rs"
