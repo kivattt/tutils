@@ -3,7 +3,7 @@
 
 # Commands
 `cat` Print a file or STDIN\
-`hex` Convert to hex\
+`hex` Encode/decode hex\
 `ls` List files\
 `pwd` Print working directory\
 `xxd` Visualize as hex
