@@ -1,14 +1,25 @@
 use std::{fs, io::{self, Read, Write}, process};
+use std::io::IsTerminal;
 use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
     files: Vec<String>,
+
+    #[arg(long, default_value_t = String::from("auto"))] // "always", "auto", "never"
+    color: String,
 }
 
 fn main() {
-    let args = Args::parse();
+    let mut args = Args::parse();
+
+    // Don't output color if we're being piped into another program
+    if args.color != "always" {
+        if !std::io::stdout().is_terminal() {
+            args.color = "never".to_string();
+        }
+    }
 
     // No input files? Read from STDIN
     if args.files.is_empty() {
@@ -33,8 +44,12 @@ fn main() {
     for file in &args.files {
         let file_str = fs::read(file);
         if file_str.is_err() {
-            eprintln!("\x1b[01;31mNo such file: {}\x1b[0m", file);
-            continue;
+            if args.color != "never" {
+                eprintln!("\x1b[01;31mNo such file: {}\x1b[0m", file);
+            } else {
+                eprintln!("No such file: {}", file);
+            }
+            process::exit(1);
         }
 
         let _ = std::io::stdout().write(&file_str.unwrap());
