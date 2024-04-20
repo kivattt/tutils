@@ -1,4 +1,4 @@
-use std::{fs, io::{self, Read}, process};
+use std::{fs, io::{self, Read, Write}, process};
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -31,11 +31,12 @@ fn main() {
     }
 
     for file in &args.files {
-        let file_str = fs::read_to_string(file);
+        let file_str = fs::read(file);
         if file_str.is_err() {
             eprintln!("\x1b[01;31mNo such file: {}\x1b[0m", file);
             continue;
         }
-        print!("{}", file_str.unwrap());
+
+        let _ = std::io::stdout().write(&file_str.unwrap());
     }
 }
