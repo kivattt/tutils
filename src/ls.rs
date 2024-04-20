@@ -2,6 +2,7 @@ use std::fs::{self};
 use std::os::unix::fs::PermissionsExt;
 use std::path::PathBuf;
 use std::process;
+use std::io::IsTerminal;
 use clap::Parser;
 
 mod util;
@@ -12,7 +13,7 @@ struct Args {
     #[arg(short, long, default_value_t = false, help="Do not ignore entries starting with .")]
     all: bool,
 
-    #[arg(long, default_value_t = String::from("always"))] // "always", "never"
+    #[arg(long, default_value_t = String::from("auto"))] // "always", "auto", "never"
     color: String,
 
     #[arg(long, default_value_t = false, help="Folder stats")]
@@ -62,6 +63,13 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
 
 fn main() {
     let mut args = Args::parse();
+
+    // Don't output color if we're being piped into another program
+    if args.color != "always" {
+        if !std::io::stdout().is_terminal() {
+            args.color = "never".to_string();
+        }
+    }
 
     if args.files.len() < 1 {
         args.files.push(util::working_directory().into_os_string().into_string().unwrap());
