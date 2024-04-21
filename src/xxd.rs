@@ -59,13 +59,28 @@ fn should_print_dot(b: u8) -> bool {
     return false;
 }
 
-fn handle_buf(buf: [u8; 512], size: usize, index: usize, color: &String) -> bool {
-    if size == 0 {
-        return false;
+fn gray_out_left_padding(hex_padded_string: String) -> String {
+    let mut ret = "\x1b[33m".to_string();
+    let mut done_coloring = false;
+    for c in hex_padded_string.bytes() {
+        if !done_coloring && c != b'0' {
+            ret.push_str("\x1b[0m");
+            done_coloring = true;
+        }
+
+        ret.push(c as char)
     }
 
+    return ret;
+}
+
+fn handle_buf(buf: [u8; 512], size: usize, index: usize, color: &String) {
     for line_index in (0..size).step_by(BYTES_PER_LINE) {
-        print!("{}", format!("{:#010x}: ", index+line_index).to_string().strip_prefix("0x").unwrap());
+        if color != "never" {
+            print!("{}", gray_out_left_padding(format!("{:#010x}: ", index+line_index).to_string().strip_prefix("0x").unwrap().to_string()));
+        } else {
+            print!("{}", format!("{:#010x}: ", index+line_index).to_string().strip_prefix("0x").unwrap());
+        }
 
         let mut i = 0;
         for b in &buf[line_index..cmp::min(size, line_index+BYTES_PER_LINE)] {
@@ -111,8 +126,6 @@ fn handle_buf(buf: [u8; 512], size: usize, index: usize, color: &String) -> bool
 
         println!();
     }
-
-    return true;
 }
 
 fn main() -> io::Result<()> {
@@ -134,9 +147,7 @@ fn main() -> io::Result<()> {
                 Ok(len) => if len == 0 {
                     break;
                 } else {
-                    if !handle_buf(buf, len, i, &args.color) {
-                        break;
-                    }
+                    handle_buf(buf, len, i, &args.color);
                     i += len;
                 }
                 Err(_) => {
@@ -153,9 +164,10 @@ fn main() -> io::Result<()> {
             let mut buf = [0; 512];
             loop {
                 let bytes_read = f.read(&mut buf).unwrap();
-                if !handle_buf(buf, bytes_read, i, &args.color) {
+                if bytes_read == 0 {
                     break;
                 }
+                handle_buf(buf, bytes_read, i, &args.color);
                 i += bytes_read;
             }
         } else {
