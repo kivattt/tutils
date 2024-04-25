@@ -10,7 +10,7 @@ cd tutils
 cargo build --release
 ```
 Then add this to your `.bashrc` file, and re-open a terminal
-```
+```bash
 tutilspath=~/tutils/target/release
 if test -d $tutilspath; then
         alias ls="$tutilspath/ls"
