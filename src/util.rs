@@ -44,6 +44,14 @@ const VIDEO_TYPES: &[&str] = &[
     ".flv",
 ];
 
+const AUDIO_TYPES: &[&str] = &[
+    ".wav",
+    ".flac",
+    ".mp3",
+    ".ogg",
+    ".m4a",
+];
+
 const ARCHIVE_TYPES: &[&str] = &[
     ".zip",
     ".jar",
@@ -99,7 +107,7 @@ pub fn ansi_color_from_file_extension(path: &str) -> &str {
     }
 
     if has_suffix_from_list(path, &VIDEO_TYPES) {
-        return "\x1b[01;35m"; // Bright pink
+        return "\x1b[01;35m"; // Bright purple/pink
     }
 
     if has_suffix_from_list(path, &ARCHIVE_TYPES) {
@@ -108,6 +116,10 @@ pub fn ansi_color_from_file_extension(path: &str) -> &str {
 
     if has_suffix_from_list(path, &CODE_TYPES) {
         return "\x1b[01;36m"; // Bright cyan
+    }
+
+    if has_suffix_from_list(path, &AUDIO_TYPES) {
+        return "\x1b[0;35m" // Dark purple
     }
 
     if has_suffix_from_list(path, &DOCUMENT_TYPES) {
