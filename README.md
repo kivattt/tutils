@@ -27,8 +27,8 @@ Since adding `tutils` to your path environment variable could break existing scr
 
 
 # Commands
-`cat` Print a file or STDIN\
-`hex` Encode/decode hex\
 `ls` List files\
 `pwd` Print working directory\
+`cat` Print a file or STDIN\
+`hex` Encode/decode hex\
 `xxd` Visualize as hex
