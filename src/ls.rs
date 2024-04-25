@@ -33,7 +33,7 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
 
     if args.color != "never" {
         if file.is_dir() {
-            print_prefix = "\x1b[01;34m".to_string();
+            print_prefix = "\x1b[01;34m".to_string(); // Blue
         } else {
             let f = fs::File::open(file.clone());
             if f.is_err() {
@@ -42,7 +42,7 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
 
             let metadata = f.unwrap().metadata().unwrap();
             if metadata.permissions().mode() & 0o111 != 0 {
-                print_prefix = "\x1b[01;32m".to_string();
+                print_prefix = "\x1b[01;32m".to_string(); // Bright green color for executables
             } else {
                 print_prefix = "".to_string();
             }

@@ -81,22 +81,37 @@ const CODE_TYPES: &[&str] = &[
     ".java",
 ];
 
+const DOCUMENT_TYPES: &[&str] = &[
+    ".md",
+    ".pdf",
+    ".epub",
+    ".docx",
+    ".doc",
+    ".odg",
+    ".fodg",
+    ".otg",
+];
+
 pub fn ansi_color_from_file_extension(path: &str) -> &str {
 
     if has_suffix_from_list(path, &IMAGE_TYPES) {
-        return "\x1b[01;33m";
+        return "\x1b[01;33m"; // Bright yellow
     }
 
     if has_suffix_from_list(path, &VIDEO_TYPES) {
-        return "\x1b[01;35m";
+        return "\x1b[01;35m"; // Bright pink
     }
 
     if has_suffix_from_list(path, &ARCHIVE_TYPES) {
-        return "\x1b[01;31m";
+        return "\x1b[01;31m"; // Bright red
     }
 
     if has_suffix_from_list(path, &CODE_TYPES) {
-        return "\x1b[01;35m";
+        return "\x1b[01;36m"; // Bright cyan
+    }
+
+    if has_suffix_from_list(path, &DOCUMENT_TYPES) {
+        return "\x1b[01;30m"; // Gray, because documents are boring
     }
 
     return "";
