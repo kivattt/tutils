@@ -103,19 +103,19 @@ const DOCUMENT_TYPES: &[&str] = &[
 pub fn ansi_color_from_file_extension(path: &str) -> &str {
 
     if has_suffix_from_list(path, &IMAGE_TYPES) {
-        return "\x1b[01;33m"; // Bright yellow
+        return "\x1b[0;93m"; // Bright yellow
     }
 
     if has_suffix_from_list(path, &VIDEO_TYPES) {
-        return "\x1b[01;35m"; // Bright purple/pink
+        return "\x1b[0;95m"; // Bright purple/pink
     }
 
     if has_suffix_from_list(path, &ARCHIVE_TYPES) {
-        return "\x1b[01;31m"; // Bright red
+        return "\x1b[0;91m"; // Bright red
     }
 
     if has_suffix_from_list(path, &CODE_TYPES) {
-        return "\x1b[01;36m"; // Bright cyan
+        return "\x1b[0;96m"; // Bright cyan
     }
 
     if has_suffix_from_list(path, &AUDIO_TYPES) {
@@ -123,7 +123,7 @@ pub fn ansi_color_from_file_extension(path: &str) -> &str {
     }
 
     if has_suffix_from_list(path, &DOCUMENT_TYPES) {
-        return "\x1b[01;30m"; // Gray, because documents are boring
+        return "\x1b[0;37m"; // Gray, because documents are boring
     }
 
     return "";
