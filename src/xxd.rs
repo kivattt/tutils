@@ -22,6 +22,7 @@ const HEX_LOOKUP: &[u8] = "0123456789abcdef".as_bytes();
 const BYTES_PER_LINE: usize = 16;
 const GROUP_BYTES: usize = 2;
 
+// All bold
 fn color_of_byte(b: u8) -> String {
     if b == 0x00 {
         return "\x1b[1;37m".to_string();
@@ -63,7 +64,7 @@ fn should_print_dot(b: u8) -> bool {
 }
 
 fn gray_out_left_padding(hex_padded_string: String) -> String {
-    let mut ret = "\x1b[33m".to_string();
+    let mut ret = "\x1b[0;37m".to_string();
     let mut done_coloring = false;
     let mut i = 0;
     for c in hex_padded_string.bytes() {
