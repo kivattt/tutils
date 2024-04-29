@@ -1,3 +1,5 @@
+<img src="screenshots/showcase.png" alt="hex, ls and xxd utilities">
+
 # Building
 `cargo build --release`\
 The built binaries will be located in `./target/release/`
