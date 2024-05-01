@@ -44,13 +44,12 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
             if metadata.permissions().mode() & 0o111 != 0 {
                 print_prefix = "\x1b[01;32m".to_string(); // Bright green color, bold for executables
             } else {
-                print_prefix = "".to_string();
+                let ansi_color = util::ansi_color_from_file_extension(file.to_str().unwrap());
+                if ansi_color != "" {
+                    print_prefix = ansi_color.to_string();
+                }
             }
 
-            let ansi_color = util::ansi_color_from_file_extension(file.to_str().unwrap());
-            if ansi_color != "" {
-                print_prefix = ansi_color.to_string();
-            }
         }
     }
 
