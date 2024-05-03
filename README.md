@@ -1,5 +1,12 @@
 <img src="screenshots/showcase.png" alt="hex, ls and xxd utilities">
 
+# Commands
+`ls` List files\
+`pwd` Print working directory\
+`cat` Print a file or STDIN\
+`hex` Encode/decode hex\
+`xxd` Visualize as hex
+
 # Building
 `cargo build --release`\
 The built binaries will be located in `./target/release/`
@@ -27,10 +34,5 @@ fi
 
 Since adding `tutils` to your path environment variable could break existing scripts that rely on system utilities specific behaviour, we use shell aliases so that shell scripts will continue to use the existing utilities, rather than `tutils`.
 
-
-# Commands
-`ls` List files\
-`pwd` Print working directory\
-`cat` Print a file or STDIN\
-`hex` Encode/decode hex\
-`xxd` Visualize as hex
+# Known issues
+xxd output isn't deterministic, it can have some "breaks" randomly depending on how many bytes it could read into a buffer at a time
