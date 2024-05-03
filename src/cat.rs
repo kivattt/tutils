@@ -15,10 +15,8 @@ fn main() {
     let mut args = Args::parse();
 
     // Don't output color if we're being piped into another program
-    if args.color != "always" {
-        if !std::io::stdout().is_terminal() {
-            args.color = "never".to_string();
-        }
+    if !std::io::stdout().is_terminal() && args.color != "always" {
+        args.color = "never".to_string();
     }
 
     // No input files? Read from STDIN
