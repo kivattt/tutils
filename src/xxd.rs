@@ -153,9 +153,9 @@ fn main() -> io::Result<()> {
 
     // No input files? Read from STDIN
     if args.files.is_empty() {
+        let mut i = 0;
         loop {
             let mut buf = [0; 512];
-            let mut i = 0;
             match io::stdin().read(&mut buf) {
                 Ok(len) => if len == 0 {
                     break;
