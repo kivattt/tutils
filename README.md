@@ -5,7 +5,8 @@
 `pwd` Print working directory\
 `cat` Print a file or STDIN\
 `hex` Encode/decode hex\
-`xxd` Visualize as hex
+`xxd` Visualize as hex\
+`ascii` ASCII-range bytes
 
 # Building
 `cargo build --release`\

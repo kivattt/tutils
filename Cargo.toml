@@ -27,3 +27,7 @@ path = "src/hex.rs"
 [[bin]]
 name = "xxd"
 path = "src/xxd.rs"
+
+[[bin]]
+name = "ascii"
+path = "src/ascii.rs"
