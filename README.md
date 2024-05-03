@@ -28,6 +28,7 @@ if test -d $tutilspath; then
         alias cat="$tutilspath/cat"
         alias hex="$tutilspath/hex"
         alias xxd="$tutilspath/xxd"
+        alias ascii="$tutilspath/ascii"
 else
         echo "Could not find tutils programs in $tutilspath"
 fi
