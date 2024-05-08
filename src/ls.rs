@@ -19,10 +19,13 @@ struct Args {
     #[arg(long, default_value_t = false, help="Folder stats")]
     summary: bool,
 
+    #[arg(short, long, default_value_t = false, help="List directories, not their contents")]
+    directory: bool,
+
     files: Vec<String>,
 }
 
-fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent: &bool) {
+fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent: bool) {
     let mut print_prefix = String::from("");
 
     if !args.all {
@@ -53,7 +56,7 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
         }
     }
 
-    if *_indent {
+    if _indent {
         print_prefix.insert_str(0, "    ");
     }
 
@@ -72,7 +75,7 @@ fn main() {
         args.files.push(util::working_directory().into_os_string().into_string().unwrap());
     }
 
-    let show_dir_names = args.files.len() > 1;
+    let show_dir_names = args.files.len() > 1 || args.directory;
 
     let mut dir_count = 0;
     let mut file_count = 0;
@@ -86,18 +89,23 @@ fn main() {
             }
         };
 
-        let paths = match fs::read_dir(&file_arg_canonicalized) {
-            Err(_) => process::exit(0),
-            Ok(paths) => paths
-        };
-
         let mut directories: Vec<PathBuf> = vec![];
         let mut files: Vec<PathBuf> = vec![];
-        for path in paths {
-            if path.as_ref().unwrap().path().is_dir() {
-                directories.push(path.as_ref().unwrap().path());
-            } else {
-                files.push(path.as_ref().unwrap().path());
+
+        if !file_arg_canonicalized.is_dir() {
+            file_count += 1;
+        } else {
+            let paths = match fs::read_dir(&file_arg_canonicalized) {
+                Err(_) => process::exit(0),
+                Ok(paths) => paths
+            };
+
+            for path in paths {
+                if path.as_ref().unwrap().path().is_dir() {
+                    directories.push(path.as_ref().unwrap().path());
+                } else {
+                    files.push(path.as_ref().unwrap().path());
+                }
             }
         }
 
@@ -107,16 +115,23 @@ fn main() {
             continue;
         }
 
-        if show_dir_names {
-            println!("\x1b[01;34m{}\x1b[0m/", util::path_without_slash_suffix(file_arg));
+        if file_arg_canonicalized.is_dir() && show_dir_names {
+            print!("\x1b[01;34m{}\x1b[0m", util::path_without_slash_suffix(file_arg));
+            if args.directory {
+                println!();
+                continue;
+            }
+            println!("/");
+        } else if !file_arg_canonicalized.is_dir() {
+            print_entry(&file_arg_canonicalized, &args, &PathBuf::from(&file_arg_canonicalized.parent().unwrap()), false);
         }
 
         for dir in directories {
-            print_entry(&dir, &args, &file_arg_canonicalized, &show_dir_names);
+            print_entry(&dir, &args, &file_arg_canonicalized, show_dir_names);
         }
 
         for file in files {
-            print_entry(&file, &args, &file_arg_canonicalized, &show_dir_names);
+            print_entry(&file, &args, &file_arg_canonicalized, show_dir_names);
         }
     }
 
