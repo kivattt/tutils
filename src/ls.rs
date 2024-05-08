@@ -86,7 +86,10 @@ fn main() {
         let file_arg_canonicalized = match PathBuf::from(file_arg).canonicalize() {
             Ok(x) => x,
             Err(_) => {
-                println!("\x1b[01;31mNo such file or directory: {}", file_arg);
+                if args.color != "never" {
+                    print!("\x1b[01;31m");
+                }
+                println!("No such file or directory: {}\x1b[0m", file_arg);
                 continue;
             }
         };
@@ -126,7 +129,10 @@ fn main() {
         }
 
         if file_arg_canonicalized.is_dir() && show_dir_names {
-            print!("\x1b[01;34m{}\x1b[0m", util::path_without_slash_suffix(file_arg));
+            if args.color != "never" {
+                print!("\x1b[01;34m");
+            }
+            print!("{}\x1b[0m", util::path_without_slash_suffix(file_arg));
             if args.directory {
                 println!();
                 continue;
