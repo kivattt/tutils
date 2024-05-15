@@ -28,14 +28,6 @@ struct Args {
 fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent: bool) {
     let mut print_prefix = String::from("");
 
-    // This shouldn't really be necessary now that we ignore hidden files before calling, but I'll
-    // leave it here to be safe
-    if !args.all {
-        if PathBuf::from(file).file_name().unwrap().to_str().unwrap().starts_with(".") {
-            return;
-        }
-    }
-
     if args.color != "never" {
         if file.is_dir() {
             print_prefix = "\x1b[01;34m".to_string(); // Blue, bold
@@ -54,7 +46,6 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
                     print_prefix = ansi_color.to_string();
                 }
             }
-
         }
     }
 
@@ -93,10 +84,6 @@ fn main() {
                 continue;
             }
         };
-
-        if !args.all && file_arg_canonicalized.file_name().unwrap().to_str().unwrap().starts_with(".") {
-            continue;
-        }
 
         let mut directories: Vec<PathBuf> = vec![];
         let mut files: Vec<PathBuf> = vec![];
