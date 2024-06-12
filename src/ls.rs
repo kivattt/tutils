@@ -73,6 +73,7 @@ fn main() {
     let mut dir_count = 0;
     let mut file_count = 0;
 
+    let mut all_files_failed = true;
     for file_arg in &args.files {
         let file_arg_canonicalized = match PathBuf::from(file_arg).canonicalize() {
             Ok(x) => x,
@@ -84,6 +85,8 @@ fn main() {
                 continue;
             }
         };
+
+        all_files_failed = false;
 
         let mut directories: Vec<PathBuf> = vec![];
         let mut files: Vec<PathBuf> = vec![];
@@ -136,6 +139,10 @@ fn main() {
         for file in files {
             print_entry(&file, &args, &file_arg_canonicalized, show_dir_names);
         }
+    }
+
+    if all_files_failed {
+        process::exit(1);
     }
 
     if args.summary {
