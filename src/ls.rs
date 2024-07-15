@@ -53,7 +53,11 @@ fn print_entry(file: &PathBuf, args: &Args, working_directory: &PathBuf, _indent
         print_prefix.insert_str(0, "    ");
     }
 
-    println!("{}{}\x1b[0m", print_prefix, file.strip_prefix(&working_directory).unwrap().display());
+    print!("{}{}", print_prefix, file.strip_prefix(&working_directory).unwrap().display());
+    if args.color != "never" {
+        print!("\x1b[0m");
+    }
+    println!();
 }
 
 fn main() {
@@ -81,7 +85,11 @@ fn main() {
                 if args.color != "never" {
                     print!("\x1b[01;31m");
                 }
-                println!("No such file or directory: {}\x1b[0m", file_arg);
+                println!("No such file or directory: {}", file_arg);
+                if args.color != "never" {
+                    print!("\x1b[0m");
+                }
+                println!();
                 continue;
             }
         };
@@ -122,7 +130,10 @@ fn main() {
             if args.color != "never" {
                 print!("\x1b[01;34m");
             }
-            print!("{}\x1b[0m", util::path_without_slash_suffix(file_arg));
+            print!("{}", util::path_without_slash_suffix(file_arg));
+            if args.color != "never" {
+                print!("\x1b[0m");
+            }
             if args.directory {
                 println!();
                 continue;
