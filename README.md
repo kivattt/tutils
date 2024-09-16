@@ -1,4 +1,4 @@
-I rewrote this in Golang, see [tutils2](https://github.com/kivattt/tutils2)
+I rewrote this in Golang, see: [tutils2](https://github.com/kivattt/tutils2)
 
 <img src="screenshots/showcase.png" alt="hex, ls and xxd utilities">
 
