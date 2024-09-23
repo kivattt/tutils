@@ -39,4 +39,4 @@ fi
 Since adding `tutils` to your path environment variable could break existing scripts that rely on system utilities specific behaviour, we use shell aliases so that shell scripts will continue to use the existing utilities, rather than `tutils`.
 
 # Known issues
-xxd output isn't deterministic, it can have some "breaks" randomly depending on how many bytes it could read into a buffer at a time
+xxd output isn't deterministic, it can have some "breaks" randomly depending on how many bytes it could read into a buffer at a time (this is fixed in the [Golang rewrite](https://github.com/kivattt/tutils2))
